@@ -4,6 +4,14 @@ from enum import Enum
 from typing import Dict, Optional, List, Set
 
 
+class Method(Enum):
+    get = 0
+    post = 1
+    head = 2
+    put = 3
+    delete = 4
+
+
 class Protocol(Enum):
     HTTP = 0
     HTTPS = 1
@@ -227,23 +235,3 @@ class HttpClient:
     def close(self) -> None:
         self.socket.close()
 
-
-def main():
-    address = input()
-    if not address:
-        address = "httpbin.org"
-    sender = HttpClient(address)
-
-    # sender.put(domain="", to_json="response.json", headers={"Host": "httpbin.org"})
-    sender.get(to_json="response.json", headers={"Host": address,
-                                                 "Accept-Charset": "utf-8",
-                                                 "Accept-Language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
-                                                 "From": "Vasilich@mail.ru",
-                                                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"})
-    print(sender.response)
-    print(sender.last_request)
-    sender.close()
-
-
-if __name__ == "__main__":
-    main()
