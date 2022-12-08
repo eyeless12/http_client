@@ -11,6 +11,7 @@ class Protocol(Enum):
 
 class HttpClient:
     RECEIVE_CHUNK_SIZE = 4096
+    BLOCK_BOUNDARY = '0775995b3f2742db7e88858fbb2ede2b'
 
     def __init__(self, host, timeout=2.0, protocol: Protocol = Protocol.HTTP):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -19,7 +20,31 @@ class HttpClient:
         self.socket.connect((socket.gethostbyname(host), port))
         self.socket.settimeout(timeout)
         self.response = None
+        self.last_request = None
         self.response_body = None
+
+    def delete(self,
+               http_protocol: str = 'HTTP/1.2',
+               domain: str = '/',
+               to_json: str = False,
+               file_data: Dict[str, str] = None,
+               cookies: Dict[str, str] = None,
+               headers: Dict[str, str] = None) -> str:
+
+        request_body_string, headers_string = self._format_headers_and_requests(cookies, headers, file_data)
+        request = f"DELETE {domain} {http_protocol}\r\n" \
+                  f"Host: {self.host}\r\n" \
+                  f"{headers_string if headers_string else ''}" \
+                  f"\r\n\r\n" \
+                  f"{request_body_string if request_body_string else ''}"
+        request = request.encode('utf-8')
+
+        self._send(request)
+        self.response, self.response_body = self._receive()
+        if to_json:
+            with open(to_json, "w") as f:
+                json.dump(self.response, f, ensure_ascii=False, indent=4)
+        return self.response
 
     def put(self,
             http_protocol: str = 'HTTP/1.2',
@@ -146,8 +171,7 @@ class HttpClient:
         if cookies is None:
             cookies = {}
         if heads is None:
-            headers = {}
-        heads['Content-Length'] = len(request_body_string.encode('utf-8'))
+            heads = {}
         if cookies:
             heads['Cookie'] = self._join_dict(cookies, '=', '; ')
         headers_string = self._join_dict(heads, ': ', '\r\n')
@@ -162,6 +186,7 @@ class HttpClient:
         )
 
     def _send(self, request: bytes) -> None:
+        self.last_request = request.decode()
         sent = 0
         while sent < len(request):
             sent = sent + self.socket.send(request[sent:])
@@ -204,11 +229,19 @@ class HttpClient:
 
 
 def main():
-    sender = HttpClient("httpbin.org")
+    address = input()
+    if not address:
+        address = "httpbin.org"
+    sender = HttpClient(address)
 
     # sender.put(domain="", to_json="response.json", headers={"Host": "httpbin.org"})
-    sender.get(to_json="response.json", headers={"Host": "httpbin.org"})
+    sender.get(to_json="response.json", headers={"Host": address,
+                                                 "Accept-Charset": "utf-8",
+                                                 "Accept-Language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+                                                 "From": "Vasilich@mail.ru",
+                                                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"})
     print(sender.response)
+    print(sender.last_request)
     sender.close()
 
 
