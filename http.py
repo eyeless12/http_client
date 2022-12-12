@@ -45,6 +45,7 @@ class HttpClient:
                   f"{headers_string if headers_string else ''}" \
                   f"\r\n\r\n" \
                   f"{request_body_string if request_body_string else ''}"
+        self.last_request = request
         request = request.encode('utf-8')
 
         self._send(request)
@@ -68,6 +69,7 @@ class HttpClient:
                   f"{headers_string if headers_string else ''}" \
                   f"\r\n\r\n" \
                   f"{request_body_string if request_body_string else ''}"
+        self.last_request = request
         request = request.encode('utf-8')
 
         self._send(request)
@@ -94,6 +96,7 @@ class HttpClient:
                   f"{headers_string if headers_string else ''}" \
                   f"\r\n\r\n" \
                   f"{request_body_string if request_body_string else ''}"
+        self.last_request = request
         request = request.encode('utf-8')
 
         self._send(request)
@@ -120,6 +123,7 @@ class HttpClient:
                   f"{headers_string if headers_string else ''}" \
                   f"\r\n\r\n" \
                   f"{request_body_string if request_body_string else ''}"
+        self.last_request = request
         request = request.encode('utf-8')
 
         self._send(request)
@@ -147,6 +151,7 @@ class HttpClient:
                   f"{headers_string if headers_string else ''}" \
                   f"\r\n\r\n" \
                   f"{request_body_string if request_body_string else ''}"
+        self.last_request = request
         request = request.encode('utf-8')
 
         self._send(request)
