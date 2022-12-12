@@ -16,7 +16,7 @@ def main(server_host, request_method, json_location, timeout, data):
     elif request_method is Method.put:
         sender.put(file_data=data[2], cookies=data[1], headers=data[0], to_json=json_location)
     elif request_method is Method.delete:
-        sender.put(file_data=data[2], cookies=data[1], headers=data[0], to_json=json_location)
+        sender.delete(file_data=data[2], cookies=data[1], headers=data[0], to_json=json_location)
     print(sender.response)
     print(sender.last_request)
     sender.close()
@@ -50,15 +50,15 @@ def parse_request(arguments):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="HTTP(S) client")
-    parser.add_argument("-a", dest="host", required=True)
-    parser.add_argument("-m", dest="method", required=True)
-    parser.add_argument("--headers", dest="headers")
-    parser.add_argument("--cookies", dest="cookies")
-    parser.add_argument("--fd", dest="data")
-    parser.add_argument("--up", dest="url_parameters")
-    parser.add_argument("-j", dest="json_location")
-    parser.add_argument("-t", dest="timeout", default=2.0, type=int)
+    parser = argparse.ArgumentParser(description="HTTP(S) client", formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("-a", dest="host", required=True, help='Host of the selected server')
+    parser.add_argument("-m", dest="method", required=True, help='HTTP request method. E.g GET, POST, e.t.c')
+    parser.add_argument("--headers", dest="headers", help='The path to the header file or raw string')
+    parser.add_argument("--cookies", dest="cookies", help='The path to the cookie file or raw string')
+    parser.add_argument("--fd", dest="data", help='The path to the file with the forms or raw string')
+    parser.add_argument("--up", dest="url_parameters", help='The path to the file with url parameters or raw string')
+    parser.add_argument("-j", dest="json_location", help='The path where to save the request result')
+    parser.add_argument("-t", dest="timeout", default=2.0, type=int, help='Request timeout in seconds')
     args = parser.parse_args()
     host, method, request_data = parse_request(args)
     main(host, method, args.json_location, args.timeout, request_data)
