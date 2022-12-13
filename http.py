@@ -1,5 +1,6 @@
 import socket
 import json
+import ssl
 from enum import Enum
 from typing import Dict, Optional, List, Set
 
@@ -21,15 +22,24 @@ class HttpClient:
     RECEIVE_CHUNK_SIZE = 4096
     BLOCK_BOUNDARY = '0775995b3f2742db7e88858fbb2ede2b'
 
-    def __init__(self, host, timeout=2.0, protocol: Protocol = Protocol.HTTP):
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    def __init__(self, host, timeout=2.0, protocol: Protocol = Protocol.HTTPS):
+        self._raw_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.host = host
         port = 80 if protocol is Protocol.HTTP else 443
-        self.socket.connect((socket.gethostbyname(host), port))
-        self.socket.settimeout(timeout)
+        self._raw_socket.connect((socket.gethostbyname(host), port))
+        self._raw_socket.settimeout(timeout)
         self.response = None
         self.last_request = None
         self.response_body = None
+
+        self._socket = _wrapped_socket = ssl.wrap_socket(
+            sock=self._raw_socket,
+            keyfile=None,
+            certfile=None,
+            server_side=False,
+            cert_reqs=ssl.CERT_NONE,
+            ssl_version=ssl.PROTOCOL_SSLv23
+        ) if protocol == Protocol.HTTPS else self._raw_socket
 
     def delete(self,
                http_protocol: str = 'HTTP/1.2',
@@ -202,7 +212,7 @@ class HttpClient:
         self.last_request = request.decode()
         sent = 0
         while sent < len(request):
-            sent = sent + self.socket.send(request[sent:])
+            sent = sent + self._socket.send(request[sent:])
 
     def _receive(self) -> (str, str):
         response = b""
@@ -212,7 +222,7 @@ class HttpClient:
         while headers_end_ind is None or \
                 len(response) - headers_end_ind != content_length:
 
-            chunk = self.socket.recv(self.RECEIVE_CHUNK_SIZE)
+            chunk = self._socket.recv(self.RECEIVE_CHUNK_SIZE)
             response += chunk
 
             ind = response.find(b'\r\n\r\n')
@@ -238,5 +248,5 @@ class HttpClient:
         return headers
 
     def close(self) -> None:
-        self.socket.close()
+        self._socket.close()
 
