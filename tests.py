@@ -1,6 +1,7 @@
 import random
 import unittest
-from http import HttpClient
+from http import HttpClient, Protocol
+from parse_url import Parser
 
 
 class Extensions_Tests(unittest.TestCase):
@@ -306,6 +307,30 @@ class Extensions_Tests(unittest.TestCase):
         )
 
         return expected_request
+
+    def test_parser_full(self):
+        url = 'https://someurl.com/with/query_string?i=main&mode=front&sid=12ab&enc=+Hello'
+        expected_queries = {
+            "i": "main",
+            "mode": "front",
+            "sid": "12ab",
+            "enc": "+Hello"
+        }
+        parser = Parser(url)
+        proto, domain, queries = parser.parse()
+
+        self.assertEqual(proto, Protocol.HTTPS)
+        self.assertEqual(domain, "someurl.com/with/query_string")
+        self.assertEqual(queries, expected_queries)
+
+    def test_parser_without_queries(self):
+        url = 'https://someurl.com/with/query_string'
+        parser = Parser(url)
+        proto, domain, queries = parser.parse()
+
+        self.assertEqual(proto, Protocol.HTTPS)
+        self.assertEqual(domain, "someurl.com/with/query_string")
+        self.assertEqual(queries, dict())
 
     def _requests_with_host(self, method: str, domain: str, protocol: str, host: str):
         file_keys = list(self.file_data.keys())

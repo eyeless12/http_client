@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="6889a71a-ed9f-4973-ac74-31cedc982892" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client.py" beforeDir="false" afterPath="$PROJECT_DIR$/client.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/http.py" beforeDir="false" afterPath="$PROJECT_DIR$/http.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,7 +51,7 @@
       <recent name="$PROJECT_DIR$/files" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.http">
+  <component name="RunManager" selected="Python tests.Python tests for tests.Extensions_Tests">
     <configuration name="http" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="http_client" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -104,7 +108,7 @@
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for tests.Extensions_Tests.test_delete_with_parameters" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for tests.Extensions_Tests.test_parser" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="http_client" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -114,11 +118,11 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;tests.Extensions_Tests.test_delete_with_parameters&quot;" />
+      <option name="_new_target" value="&quot;tests.Extensions_Tests.test_parser&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for tests.Extensions_Tests.test_delete_without_parameters" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for tests.Extensions_Tests.test_parser_without_queries" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="http_client" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -128,17 +132,17 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;tests.Extensions_Tests.test_delete_without_parameters&quot;" />
+      <option name="_new_target" value="&quot;tests.Extensions_Tests.test_parser_without_queries&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.Python tests for tests.Extensions_Tests" />
+        <item itemvalue="Python tests.Python tests for tests.Extensions_Tests.test_parser_without_queries" />
+        <item itemvalue="Python tests.Python tests for tests.Extensions_Tests.test_parser" />
         <item itemvalue="Python.http" />
         <item itemvalue="Python.main" />
-        <item itemvalue="Python tests.Python tests for tests.Extensions_Tests" />
-        <item itemvalue="Python tests.Python tests for tests.Extensions_Tests.test_delete_with_parameters" />
-        <item itemvalue="Python tests.Python tests for tests.Extensions_Tests.test_delete_without_parameters" />
       </list>
     </recent_temporary>
   </component>

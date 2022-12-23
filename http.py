@@ -32,12 +32,13 @@ class HttpClient:
         self.last_request = None
         self.response_body = None
 
+        ssl.SSLContext.verify_mode = ssl.VerifyMode.CERT_REQUIRED
         self._socket = _wrapped_socket = ssl.wrap_socket(
             sock=self._raw_socket,
             keyfile=None,
             certfile=None,
             server_side=False,
-            cert_reqs=ssl.CERT_NONE,
+            cert_reqs=ssl.CERT_REQUIRED,
             ssl_version=ssl.PROTOCOL_SSLv23
         ) if protocol == Protocol.HTTPS else self._raw_socket
 
