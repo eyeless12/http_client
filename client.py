@@ -1,3 +1,5 @@
+import sys
+
 from http import HttpClient, Method, Protocol
 import argparse
 from os import path
@@ -37,36 +39,13 @@ def data_to_dict(data: str) -> Dict[str, str]:
 
 
 def parse_request(arguments):
-    _parsed = False
-    _host = None
-    _proto = None
-    _domain = None
-    _queries = None
+    _parser = Parser(arguments.url)
+    _proto, _host, _path, _queries = _parser.parse()
 
-    host = arguments.host
     method = Method[arguments.method.lower()]
-    protocol = Protocol.HTTPS
-    argument_data = [None, None, None, None]
+    argument_data = [None, None, None]
 
-    if arguments.protocol == "http":
-        protocol = Protocol.HTTP
-    else:
-        protocol = Protocol.HTTPS
-
-    if arguments.parse is not None:
-        _parsed = True
-        _parser = Parser(arguments.parse)
-        _proto, _address, _queries = _parser.parse()
-
-        _index = _address.find('/')
-        if _index == -1:
-            _host = _address
-            _domain = '/'
-        else:
-            _host = _address[:_index]
-            _domain = _address[_index:]
-
-    all_data = [arguments.headers, arguments.cookies, arguments.data, arguments.url_parameters]
+    all_data = [arguments.headers, arguments.cookies, arguments.data]
     for i in range(len(all_data)):
         data = all_data[i]
         if data:
@@ -75,32 +54,24 @@ def parse_request(arguments):
                     argument_data[i] = f.read()
             else:
                 argument_data[i] = data
+    _formatted_data = list(map(data_to_dict, argument_data))
+    _formatted_data.append(_queries)
 
-    if _parsed:
-        data = list(map(data_to_dict, argument_data[-2::-1]))
-        if _queries:
-            data.append(_queries)
-        else:
-            data.append(None)
-
-        return _proto, _host, _domain, method, data
-    else:
-        return protocol, host, '/',  method, list(map(data_to_dict, argument_data))
+    return _proto, _host, _path, method, _formatted_data
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="HTTP(S) client", formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("-a", dest="host", required=True, help='Host of the selected server')
+    parser.add_argument(dest="url", help='Parse from exact url')
     parser.add_argument("-m", dest="method", required=True, help='HTTP(s) request method. E.g GET, POST, e.t.c')
-    parser.add_argument("--parse", dest="parse", help='Parse from exact url')
-    parser.add_argument("--proto", dest="protocol", help="HTTPS by default, but you can run client on HTTP protocol")
+
     parser.add_argument("--headers", dest="headers", help='The path to the header file or raw string')
     parser.add_argument("--cookies", dest="cookies", help='The path to the cookie file or raw string')
     parser.add_argument("--fd", dest="data", help='The path to the file with the forms or raw string')
-    parser.add_argument("--up", dest="url_parameters", help='The path to the file with url parameters or raw string')
     parser.add_argument("-j", dest="json_location", help='The path where to save the request result')
     parser.add_argument("-t", dest="timeout", default=2.0, type=int, help='Request timeout in seconds')
+
     args = parser.parse_args()
-    proto, host, domain, method, request_data = parse_request(args)
-    main(host, domain, method, args.json_location, args.timeout, request_data, proto)
+    proto, host, path, method, request_data = parse_request(args)
+    main(host, path, method, args.json_location, args.timeout, request_data, proto)
 
